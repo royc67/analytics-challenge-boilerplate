@@ -1,0 +1,17 @@
+.retention-cohort{
+    /* display:flex; */
+    /* flex-direction: column; */
+    height:100%;
+    width:100%;
+    background-color: aliceblue;
+    overflow: scroll;
+    padding: 10px;
+  }
+  /* .retention-cohort .table-container{
+  }
+  .retention-cohort table{
+  }
+  .retention-week{
+  }
+  .weekDataBlock{
+  } */
