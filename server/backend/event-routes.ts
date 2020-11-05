@@ -2,10 +2,9 @@
 
 import express from "express";
 import { Request, Response } from "express";
-
+import { v4 as uuidv4 } from "uuid";
 // some useful database functions in here:
-import {
-} from "./database";
+import db, { createEvent, createUser } from "./database";
 import { Event, weeklyRetentionObject } from "../../client/src/models/event";
 import { ensureAuthenticated, validateMiddleware } from "./helpers";
 
@@ -60,8 +59,10 @@ router.get('/:eventId',(req : Request, res : Response) => {
   res.send('/:eventId')
 });
 
+
 router.post('/', (req: Request, res: Response) => {
-  res.send('/')
+  createEvent(req.body)
+  res.status(201).send()
 });
 
 router.get('/chart/os/:time',(req: Request, res: Response) => {

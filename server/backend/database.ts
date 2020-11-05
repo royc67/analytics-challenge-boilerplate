@@ -208,6 +208,26 @@ const saveUser = (user: User) => {
   db.get(USER_TABLE).push(user).write();
 };
 
+export const createEvent = (eventDetails: Partial<Event>): Event => {
+  const event: Event = {
+    _id: shortid(),
+    session_id: v4(),
+    name: eventDetails.name!,
+    url: eventDetails.url!,
+    distinct_user_id: eventDetails.distinct_user_id!,
+    date: eventDetails.date!,
+    os: eventDetails.os!,
+    browser: eventDetails.browser!,
+    geolocation: eventDetails.geolocation!
+  };
+  saveEvent(event);
+  return event;
+};
+
+const saveEvent = (event: Event) =>{
+  db.get(EVENT_TABLE).push(event).write();
+};
+
 export const updateUserById = (userId: string, edits: Partial<User>) => {
   const user = getUserById(userId);
 
