@@ -1218,11 +1218,30 @@ export const getTimeByUserEachURL = (): any [] => {
 
   return [userURLdetails, data2];
 };
+export const formatDate = (date: Date): string => {
+  var d = new Date(date),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
 
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
 
-export const createEvent = (event: Event) => {
-  db.get(EVENT_TABLE).push(event).write();
+  return [day, month, year].join("/");
 };
 
-
+export const formatDateToHour = (date: Date): string => {
+  3;
+  const cuurentDate = new Date(date);
+  let dateHours = `${cuurentDate.getHours()}`;
+  if (cuurentDate.getHours() < 10) {
+    dateHours = "0" + dateHours;
+  }
+  let dateMinutes = `${cuurentDate.getMinutes()}`;
+  if (cuurentDate.getMinutes() < 10) {
+    dateMinutes = "0" + dateMinutes;
+  }
+  const hourStr = `${dateHours}:${dateMinutes}`;
+  return hourStr;
+};
 export default db;
