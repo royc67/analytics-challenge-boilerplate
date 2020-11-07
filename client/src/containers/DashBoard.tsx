@@ -10,7 +10,6 @@ import SessionsByDayChart from "../components/tiles/SessionsChartByDay";
 import EventLog from "../components/tiles/EventsLog";
 import SessionsByHourChsrt from "../components/tiles/SessionsChartByHour";
 import RetentionCohort from "../components/tiles/RetentionCohort";
-import Draggable from 'react-draggable';
 
 const useStyles = makeStyles((theme) => ({
   dashboard: {
@@ -58,53 +57,39 @@ const DashBoard: React.FC = () => {
       <ErrorBoundary>
         <Grid container justify={"center"} spacing={10} className={classes.dashboard}>
           <ErrorBoundary>
-            <Draggable>
               <Grid item className={classes.GeoTile} xs={10}>
                   <GeoTile />
               </Grid>
-            </Draggable>
           </ErrorBoundary>
           <ErrorBoundary>
-            <Draggable>
               <Grid item className={classes.tile} xs={5}>
                 <SessionsByDayChart />
               </Grid>
-            </Draggable>
           </ErrorBoundary>
           <ErrorBoundary>
-          <Draggable>
             <Grid item className={classes.tile} xs={6}>
               <SessionsByHourChsrt />
             </Grid>
-            </Draggable>
           </ErrorBoundary>
           <ErrorBoundary>
-          <Draggable>
             <Grid item className={classes.tile} xs={5}>
               <TimeOnURLChartPie />
             </Grid>
-            </Draggable>
           </ErrorBoundary>
           <ErrorBoundary>
-          <Draggable>
             <Grid item className={classes.tile} xs={6}>
               <TimeOnURLChartBar />
             </Grid>
-            </Draggable>
           </ErrorBoundary>
           <ErrorBoundary>
-          <Draggable>
             <Grid item className={classes.tile} xs={7}>
               <EventLog />
             </Grid>
-            </Draggable>
           </ErrorBoundary>
           <ErrorBoundary>
-          <Draggable>
             <Grid item className={classes.GeoTile} xs={7}>
               <RetentionCohort />
             </Grid>
-            </Draggable>
             </ErrorBoundary>
         </Grid>
       </ErrorBoundary>

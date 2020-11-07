@@ -172,7 +172,7 @@ function Map({events}:{events:Event[]|undefined}) {
     <>
 
     <LoadScript
-      googleMapsApiKey='AIzaSyD3uRdDcPpdu9aJ5HzF27fHowG86nAQ3zo'
+      googleMapsApiKey=""
 
 >
       <GoogleMap

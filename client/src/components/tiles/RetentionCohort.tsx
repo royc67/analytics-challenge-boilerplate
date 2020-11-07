@@ -46,7 +46,6 @@ const RetentionCohort = () => {
 
   return (
     <div className="retention-cohort">
-      <button onClick={()=>{console.log(weeks)}}>clk</button>
       <h1>User Retention</h1>
       <div className="table-container">
         <table>
