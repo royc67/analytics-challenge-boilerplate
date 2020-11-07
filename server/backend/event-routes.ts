@@ -15,20 +15,13 @@ import {
   userFieldsValidator,
   isUserValidator,
 } from "./validators";
-import { first, last } from "lodash";
+import { first, last, result } from "lodash";
 import { getLeadingCommentRanges } from "typescript";
 import { format } from "path";
+import { User } from "../../client/src/models";
 const router = express.Router();
 
-// Routes
-interface weeklyRetentionObject {
-  registrationWeek:number;  //launch is week 0 and so on
-  newUsers:number;  // how many new user have joined this week
-  weeklyRetention:number[]; // for every week since, what percentage of the users came back. weeklyRetention[0] is always 100% because it's the week of registration  
-  start:string;  //date string for the first day of the week
-  end:string  //date string for the first day of the week
-}
-
+//routes
 
 interface Filter {
   sorting: string;
@@ -152,36 +145,100 @@ router.get('/week', (req: Request, res: Response) => {
 router.get('/retention', (req: Request, res: Response) => {
   const allEvents = getAllEvents();
   let results: weeklyRetentionObject[] = []
-  const {dayZero} = req.query;
-  const lastDay: number = new Date().setHours(23,59,59);
-  let rawDataArray: {
-    weekNumber: number;
-    newUsers: string[];
-    loggedOn: string[]
-    startWeek: number;
-    endWeek: number; 
-  }[] = new Array(Math.ceil((lastDay - dayZero) / OneWeek))
+  let dayZero: number = +req.query.dayZero;
+  dayZero = new Date (new Date(dayZero).toDateString()).getTime();
+  const lastDay: number = new Date (new Date().toDateString()).getTime();
+  const numberOfWeeks = Math.ceil((lastDay - dayZero) / OneWeek);
+  console.log("numberOfWeeks", numberOfWeeks)
 
-  let currentWeek = dayZero;
   let currentEvents: Event[] = [];
-  for (let i = 0; i < rawDataArray.length; i++){
-    let newUsers: string[] = []
-    let loggedUsers: string[] = []
-    currentEvents = allEvents.filter((event: Event): Boolean =>{
-      if (event.date > dayZero && event.date < lastDay){
-        return (event.name == "signup" || event.name == "login")
-        
+  let usersStats: {week: number; newUsers: string[]; loggedUsers: string[]}[] = []
+  
+  function getDateInFullFormat(dateNow:number): string{
+    let year = new Date(dateNow).getFullYear()
+    let day = new Date(dateNow).getDate()
+    let month = new Date(dateNow).getMonth() +1;
+    let hours = new Date(dateNow).getHours()
+    let minutes = new Date(dateNow).getMinutes()
+    return `${year}/${month}/${day}/${hours}/${minutes}`;
+  }
+  
+
+  currentEvents = allEvents.filter((event: Event): Boolean =>{
+    if (event.date > dayZero && event.date < lastDay + OneWeek){
+      return (event.name === "signup" || event.name === "login")
       }
     return false;
     })
+    let tempArr : {
+      week: number; 
+      newUsers: string[]; 
+      loggedUsers: string[]
+    }
+    
+    let weekStart = dayZero;
+    let weekEnd = weekStart + OneWeek;
+    
+    for (let weekNumber = 1; weekNumber <= numberOfWeeks; weekStart+=OneWeek, weekEnd+=OneWeek, weekNumber++){
+      if(new Date(weekStart).getHours() != 0){
+        weekStart = new Date(weekStart + OneDay).setHours(0,0,0);
+      }  
+      if(new Date(weekEnd).getHours() != 0){
+        weekEnd = new Date(weekEnd + OneDay).setHours(0,0,0);
+      }  
+      tempArr = {
+        week: weekNumber,
+        newUsers: [],
+        loggedUsers: []
+      };
+      (weekNumber == 6) && console.log("weekStart", getDateInFullFormat(weekStart), "weekEnd" , getDateInFullFormat(weekEnd) + "==================");
+      currentEvents.forEach((event: Event) => {
+        if( weekEnd > event.date && event.date > weekStart ){
+          switch (event.name){
+            case ("signup"):
+                tempArr.newUsers.push(event.distinct_user_id)
+              break;
+            case ("login"):
+              if (!tempArr.loggedUsers.includes(event.distinct_user_id))
+                tempArr.loggedUsers.push(event.distinct_user_id)
+              break;
+          }
+        }
+      })
+      usersStats.push(tempArr);
+      }
 
-    currentEvents.forEach((event: Event) => {
-      switch ()
-    })
-  }
+      console.log("usersStats", usersStats)
 
-  res.send('/retention')
+      let userCounter = 0;
+      for (let i = 0; i<usersStats.length;i++){
+        results.push({
+          registrationWeek: i+1,
+          newUsers: usersStats[i].newUsers.length,
+          weeklyRetention: [100],
+          start: getDateInFullFormat(dayZero + (i * OneWeek)),
+          end: getDateInFullFormat(dayZero + (i+1) * OneWeek)
+        })
+        for (let k = i + 1 ; k<usersStats.length; k++){
+          userCounter = usersStats[k].loggedUsers.filter((userId): Boolean => {
+            return usersStats[i].newUsers.includes(userId)
+          }).length
+          // usersStats[i].newUsers.forEach((userId : string) => {
+          //   if (usersStats[k].loggedUsers.includes(userId)){
+          //     userCounter ++;
+          //   }
+          // })
+          results[i].weeklyRetention.push(Math.round(100 * (userCounter / results[i].newUsers)))
+        }
+      }
+      console.log("results:", results)
+
+    
+  
+
+  res.send(results)
 });
+
 router.get('/:eventId',(req : Request, res : Response) => {
   res.send('/:eventId')
 });
