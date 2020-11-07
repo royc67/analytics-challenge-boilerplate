@@ -4,7 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { Interpreter } from "xstate";
 import { AuthMachineContext, AuthMachineEvents } from "../machines/authMachine";
-import { TimeOnURLChartBar, TimeOnURLChartPie } from "../components/tiles/TimeOnURLChart";
 import ErrorBoundary from "../components/ErrorBoundary";
 import SessionsByDayChart from "../components/tiles/SessionsChartByDay";
 import EventLog from "../components/tiles/EventsLog";
@@ -69,16 +68,6 @@ const DashBoard: React.FC = () => {
           <ErrorBoundary>
             <Grid item className={classes.tile} xs={6}>
               <SessionsByHourChsrt />
-            </Grid>
-          </ErrorBoundary>
-          <ErrorBoundary>
-            <Grid item className={classes.tile} xs={5}>
-              <TimeOnURLChartPie />
-            </Grid>
-          </ErrorBoundary>
-          <ErrorBoundary>
-            <Grid item className={classes.tile} xs={6}>
-              <TimeOnURLChartBar />
             </Grid>
           </ErrorBoundary>
           <ErrorBoundary>
