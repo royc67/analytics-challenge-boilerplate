@@ -185,17 +185,22 @@ router.get('/retention', (req: Request, res: Response) => {
         weekStart = new Date(weekStart + OneDay).setHours(0,0,0);
       }  
       if(new Date(weekEnd).getHours() != 0){
-        weekEnd = new Date(weekEnd + OneDay).setHours(0,0,0) - OneHour/60;
+        if (winterTimeDate >= weekStart && winterTimeDate <= weekEnd){
+          weekEnd += OneHour;
+          // console.log("25/10/2020 Is WinterDay", formatDate(new Date(weekStart)) , formatDate(new Date(weekEnd)))
+        } else{
+          weekEnd = new Date(weekEnd + OneDay).setHours(0,0,0);
+        }
       }  
-      if (winterTimeDate >= weekStart && winterTimeDate <= weekEnd){
-        weekEnd += OneHour;
-      }
+      // if (winterTimeDate >= weekStart && winterTimeDate <= weekEnd){
+      //   weekEnd += OneHour;
+      // }
       tempArr = {
         week: weekNumber,
         newUsers: [],
         loggedUsers: []
       };
-      (weekNumber == 6) && console.log("weekStart", getDateInFullFormat(weekStart), "weekEnd" , getDateInFullFormat(weekEnd) + "==================");
+      // (weekNumber == 6) && console.log("weekStart", getDateInFullFormat(weekStart), "weekEnd" , getDateInFullFormat(weekEnd) + "==================");
       currentEvents.forEach((event: Event) => {
         if( weekEnd > event.date && event.date > weekStart ){
           switch (event.name){
@@ -210,19 +215,19 @@ router.get('/retention', (req: Request, res: Response) => {
         }
       })
       usersStats.push(tempArr);
+      results.push({
+        registrationWeek: weekNumber,
+        newUsers: usersStats[weekNumber-1].newUsers.length,
+        weeklyRetention: [100],
+        start: getDateInFullFormat(weekStart),
+        end: getDateInFullFormat(weekEnd)
+      })
       }
 
-      console.log("usersStats", usersStats)
+      // console.log("usersStats", usersStats)
 
       let userCounter = 0;
       for (let i = 0; i<usersStats.length;i++){
-        results.push({
-          registrationWeek: i+1,
-          newUsers: usersStats[i].newUsers.length,
-          weeklyRetention: [100],
-          start: getDateInFullFormat(dayZero + (i * OneWeek)),
-          end: getDateInFullFormat(dayZero + (i+1) * OneWeek)
-        })
         for (let k = i + 1 ; k<usersStats.length; k++){
           userCounter = usersStats[k].loggedUsers.filter((userId): Boolean => {
             return usersStats[i].newUsers.includes(userId)
