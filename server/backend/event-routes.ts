@@ -147,8 +147,8 @@ router.get('/retention', (req: Request, res: Response) => {
   let results: weeklyRetentionObject[] = []
   let dayZero: number = +req.query.dayZero;
   const winterTimeDate: number = new Date(2020, 9, 25).getTime();
-  dayZero = new Date (new Date(dayZero).toDateString()).getTime();
-  const lastDay: number = new Date (new Date().toDateString()).getTime();
+  dayZero = new Date (new Date(dayZero)).setHours(0,0,0);
+  const lastDay: number = new Date().getTime();
   const numberOfWeeks = Math.ceil((lastDay - dayZero) / OneWeek);
   console.log("numberOfWeeks", numberOfWeeks)
 
@@ -177,7 +177,8 @@ router.get('/retention', (req: Request, res: Response) => {
       loggedUsers: string[]
     }
     
-    let weekStart = new Date(dayZero).setHours(0,0,0,0);
+    let weekStart = dayZero;
+    // let weekStart = new Date(dayZero).setHours(0,0,0,0);
     let weekEnd = weekStart + OneWeek - OneHour / 60;
 
     for (let weekNumber = 1; weekNumber <= numberOfWeeks; weekStart+=OneWeek, weekEnd+=OneWeek, weekNumber++){
