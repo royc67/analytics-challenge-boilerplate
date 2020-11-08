@@ -185,10 +185,9 @@ router.get('/retention', (req: Request, res: Response) => {
         weekStart = new Date(weekStart + OneDay).setHours(0,0,0);
       }  
       if(new Date(weekEnd).getHours() != 0){
-        weekEnd = new Date(weekEnd + OneDay).setHours(0,0,0);
+        weekEnd = new Date(weekEnd + OneDay).setHours(0,0,0) - OneHour/60;
       }  
-      if (winterTimeDate > weekStart && winterTimeDate < weekEnd){
-        weekStart += OneHour;
+      if (winterTimeDate >= weekStart && winterTimeDate <= weekEnd){
         weekEnd += OneHour;
       }
       tempArr = {
@@ -228,11 +227,6 @@ router.get('/retention', (req: Request, res: Response) => {
           userCounter = usersStats[k].loggedUsers.filter((userId): Boolean => {
             return usersStats[i].newUsers.includes(userId)
           }).length
-          // usersStats[i].newUsers.forEach((userId : string) => {
-          //   if (usersStats[k].loggedUsers.includes(userId)){
-          //     userCounter ++;
-          //   }
-          // })
           results[i].weeklyRetention.push(Math.round(100 * (userCounter / results[i].newUsers)))
         }
       }
