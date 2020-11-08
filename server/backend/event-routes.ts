@@ -192,9 +192,9 @@ router.get('/retention', (req: Request, res: Response) => {
       //     weekEnd = new Date(weekEnd).setHours(23,59 ,59);
       //   }
       // }  
-      if (winterTimeDate >= weekStart && winterTimeDate <= weekEnd){
-        weekEnd += OneHour;
-      }
+      // if (winterTimeDate >= weekStart && winterTimeDate <= weekEnd){
+      //   weekEnd += OneHour;
+      // }
       tempArr = {
         week: weekNumber,
         newUsers: [],
