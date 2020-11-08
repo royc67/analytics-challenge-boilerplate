@@ -177,24 +177,24 @@ router.get('/retention', (req: Request, res: Response) => {
       loggedUsers: string[]
     }
     
-    let weekStart = dayZero;
-    let weekEnd = weekStart + OneWeek;
-    
+    let weekStart = new Date(dayZero).setHours(0,0,0,0);
+    let weekEnd = weekStart + OneWeek - OneHour / 60;
+
     for (let weekNumber = 1; weekNumber <= numberOfWeeks; weekStart+=OneWeek, weekEnd+=OneWeek, weekNumber++){
-      if(new Date(weekStart).getHours() != 0){
-        weekStart = new Date(weekStart + OneDay).setHours(0,0,0);
-      }  
-      if(new Date(weekEnd).getHours() != 0){
-        if (winterTimeDate >= weekStart && winterTimeDate <= weekEnd){
-          weekEnd += OneHour;
-          // console.log("25/10/2020 Is WinterDay", formatDate(new Date(weekStart)) , formatDate(new Date(weekEnd)))
-        } else{
-          weekEnd = new Date(weekEnd + OneDay).setHours(0,0,0);
-        }
-      }  
       // if (winterTimeDate >= weekStart && winterTimeDate <= weekEnd){
       //   weekEnd += OneHour;
       // }
+      // if(new Date(weekStart).getHours() != 0){
+      //   weekStart = new Date(weekStart + OneDay).setHours(0,0,0);
+      // }  
+      // if(new Date(weekEnd).getHours() != 0){
+      //   } else{
+      //     weekEnd = new Date(weekEnd).setHours(23,59 ,59);
+      //   }
+      // }  
+      if (winterTimeDate >= weekStart && winterTimeDate <= weekEnd){
+        weekEnd += OneHour;
+      }
       tempArr = {
         week: weekNumber,
         newUsers: [],
@@ -236,10 +236,6 @@ router.get('/retention', (req: Request, res: Response) => {
         }
       }
       console.log("results:", results)
-
-    
-  
-
   res.send(results)
 });
 
