@@ -166,7 +166,7 @@ router.get('/retention', (req: Request, res: Response) => {
   
 
   currentEvents = allEvents.filter((event: Event): Boolean =>{
-    if (event.date > dayZero && event.date < lastDay + OneWeek){
+    if (event.date > dayZero){
       return (event.name === "signup" || event.name === "login")
       }
     return false;
@@ -191,10 +191,11 @@ router.get('/retention', (req: Request, res: Response) => {
       //   } else{
       //     weekEnd = new Date(weekEnd).setHours(23,59 ,59);
       //   }
-      // }  
-      // if (winterTimeDate >= weekStart && winterTimeDate <= weekEnd){
-      //   weekEnd += OneHour;
       // }
+      if (winterTimeDate >= weekStart && winterTimeDate <= weekEnd){
+        weekStart += OneHour;
+        weekEnd += OneHour;
+      }
       tempArr = {
         week: weekNumber,
         newUsers: [],
