@@ -146,6 +146,7 @@ router.get('/retention', (req: Request, res: Response) => {
   const allEvents = getAllEvents();
   let results: weeklyRetentionObject[] = []
   let dayZero: number = +req.query.dayZero;
+  const winterTimeDate: number = new Date(2020, 9, 25).getTime();
   dayZero = new Date (new Date(dayZero).toDateString()).getTime();
   const lastDay: number = new Date (new Date().toDateString()).getTime();
   const numberOfWeeks = Math.ceil((lastDay - dayZero) / OneWeek);
@@ -186,6 +187,10 @@ router.get('/retention', (req: Request, res: Response) => {
       if(new Date(weekEnd).getHours() != 0){
         weekEnd = new Date(weekEnd + OneDay).setHours(0,0,0);
       }  
+      if (winterTimeDate > weekStart && winterTimeDate < weekEnd){
+        weekStart += OneHour;
+        weekEnd += OneHour;
+      }
       tempArr = {
         week: weekNumber,
         newUsers: [],
